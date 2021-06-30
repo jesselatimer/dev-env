@@ -1,0 +1,81 @@
+alias g='git'
+alias gpull='git pull'
+alias gpush='git push'
+
+alias gs='git status --long'
+alias gl='git log'
+alias glg='git log --graph --decorate --oneline'
+
+alias ga='git add'
+alias gaa='git add -A'
+alias gc='git commit'
+alias gcm='git commit -m'
+
+alias gswitch='git switch'
+
+alias gco='git checkout'
+alias gcom='git checkout master'
+function gcob {
+  echo "Checking out branch jesse/ENG-$1..."
+  git checkout jesse/ENG-$1
+}
+function newbranch {
+  echo "Checking out new branch jesse/ENG-$1..."
+  git checkout -b jesse/ENG-$1
+  echo "Setting upstream and pushing jesse/ENG-$1..."
+  git push -u origin jesse/ENG-$1
+}
+
+alias gdiff='git diff origin/master'
+function savediff {
+  cur_branch_number=$(git symbolic-ref --short -q HEAD | grep -o -E '[0-9]+\-?[0-9]?')
+  i="0"
+  if [ "$#" -eq 1 ]
+  then
+    diff_branch="origin/jesse/ENG-$1"
+    while [[ -f ~/Desktop/diffs/diff$cur_branch_number-$i(vs ENG-$1).txt ]]; do
+    ((i = i + 1))
+    done
+    save_path=$cur_branch_number-$i(vs ENG-$1).txt
+  else
+    diff_branch='origin/master'
+    while [[ -f ~/Desktop/diffs/diff$cur_branch_number-$i.txt ]]; do
+    ((i = i + 1))
+    done
+    save_path=$cur_branch_number-$i.txt
+  fi
+  echo "Saving diff from branch '$diff_branch'."
+  git diff --full-index $diff_branch > ~/Desktop/diffs/diff$save_path;
+  echo "Saved to: ~/Desktop/diffs/diff$save_path"
+}
+
+alias gm='git merge'
+function gmom {
+  echo "Pulling and merging in master..."
+  git pull
+  git merge origin/master
+}
+function gmbranch {
+  if [ "$#" -ne 2 ]
+  then
+    echo "ERROR: merging into master requires a branch number and commit message."
+    return
+  fi
+  echo "Checking out master and pulling..."
+  git checkout master
+  git pull
+  echo "Merging jesse/ENG-$1..."
+  git merge --squash origin jesse/ENG-$1
+  git commit -m '[ENG-'$1'] '$2''
+}
+
+alias a='atom'
+alias a.='atom .'
+alias c='code'
+alias c.='code .'
+
+alias clearpyc='find . -name \*.pyc -delete'
+
+alias dt='direct_test.py'
+alias dtr='direct_test.py -r'
+alias dtpr='direct_test.py -p0 -r'

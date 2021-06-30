@@ -10,3 +10,7 @@ bindkey '^[OB' history-search-forward
 
 # Use prezto theme "sorin"
 # prompt -s sorin
+
+# VSCode uses Fira Code font
+# theme: Dark+
+# material icon theme
